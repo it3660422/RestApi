@@ -55,14 +55,53 @@ namespace RestApi.Controllers
                 output.CardType = unknown;
                 return Ok(output);
             }
-
             
             bool isPrime = IsPrimeYear(expYear);
             bool isLeap = IsLeapYear(expYear);
+            bool isExist = cnt > 0 ? true : false;
 
-            output.Result = firstDigitOfCardNo;
-            if (cnt > 0)
+            //Main Logic
+            if (firstDigitOfCardNo.Equals("4") && digitLength == 16)
             {
+                //visa
+                output.CardType = visa;
+                output.Result = isExist ? valid : notExist;
+                if (isLeap)
+                {
+                    output.Result = isExist ? valid : notExist;
+                }
+                else
+                {
+                    output.Result = isExist ? invalid : notExist;
+                }
+            } else if (firstDigitOfCardNo.Equals("5") && digitLength == 16)
+            {
+                //MasterCard
+                output.CardType = master;
+                if (isPrime)
+                {
+                    output.Result = isExist ? valid : notExist;
+                } else
+                {
+                    output.Result = isExist ? invalid : notExist;
+                }               
+            }
+            else if (firstDigitOfCardNo.Equals("3") && digitLength == 15)
+            {
+                //Amex
+                output.CardType = amex;
+                output.Result = isExist ? valid : notExist;
+            }
+            else if (firstDigitOfCardNo.Equals("3") && digitLength == 16)
+            {
+                //JCB
+                output.CardType = jcb;
+                output.Result = valid;
+            } else
+            {
+                //unknow
+                output.CardType = unknown;
+                output.Result = invalid;
             }
             return Ok(output);
         }
