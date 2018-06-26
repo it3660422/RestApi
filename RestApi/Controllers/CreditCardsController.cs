@@ -57,8 +57,8 @@ namespace RestApi.Controllers
             }
 
             
-            bool isPrime = false;
-            bool isLeap = false;
+            bool isPrime = IsPrimeYear(expYear);
+            bool isLeap = IsLeapYear(expYear);
 
             output.Result = firstDigitOfCardNo;
             if (cnt > 0)
@@ -75,6 +75,21 @@ namespace RestApi.Controllers
             if (month < 1 || month > 12)
             {
                 return false;
+            }
+            return true;
+        }
+        public static bool IsLeapYear(int year)
+        {
+            return DateTime.IsLeapYear(year);
+        }
+        public static bool IsPrimeYear(int year)
+        {
+            if (year == 1) return false;
+            if (year == 2) return true;
+            if (year % 2 == 0) return false;             
+            for (int i = 2; i < year; i++)
+            { 
+                if (year % i == 0) return false;
             }
             return true;
         }
