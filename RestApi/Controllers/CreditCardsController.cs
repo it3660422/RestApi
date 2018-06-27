@@ -49,12 +49,6 @@ namespace RestApi.Controllers
 
             int expMonth = Convert.ToInt32((mmyyyy.ToString().Trim().PadLeft(6, '0')).Substring(0,2));
             int expYear = Convert.ToInt32((mmyyyy.ToString().Trim().PadLeft(6, '0')).Substring(mmyyyy.ToString().Trim().PadLeft(6, '0').Length - 4));
-            if (digitLength > 16 || digitLength < 15 || !IsValidYearMonth(expMonth, expYear))
-            {
-                output.Result = notExist;
-                output.CardType = unknown;
-                return Ok(output);
-            }
             
             bool isPrime = IsPrimeYear(expYear);
             bool isLeap = IsLeapYear(expYear);
@@ -66,7 +60,11 @@ namespace RestApi.Controllers
                 //visa
                 output.CardType = visa;
                 output.Result = isExist ? valid : notExist;
-                if (isLeap)
+                if (!IsValidYearMonth(expMonth, expYear))
+                {
+                    output.Result = invalid;
+                }
+                else if (isLeap)
                 {
                     output.Result = isExist ? valid : notExist;
                 }
@@ -78,7 +76,11 @@ namespace RestApi.Controllers
             {
                 //MasterCard
                 output.CardType = master;
-                if (isPrime)
+                if (!IsValidYearMonth(expMonth, expYear))
+                {
+                    output.Result = invalid;
+                }
+                else if (isPrime)
                 {
                     output.Result = isExist ? valid : notExist;
                 } else
@@ -90,13 +92,19 @@ namespace RestApi.Controllers
             {
                 //Amex
                 output.CardType = amex;
-                output.Result = isExist ? valid : notExist;
+                if (!IsValidYearMonth(expMonth, expYear))
+                {
+                    output.Result = invalid;
+                } else
+                {
+                    output.Result = isExist ? valid : notExist;
+                }
             }
             else if (firstDigitOfCardNo.Equals("3") && digitLength == 16)
             {
                 //JCB
                 output.CardType = jcb;
-                output.Result = valid;
+                output.Result = !IsValidYearMonth(expMonth, expYear)?invalid:valid;
             } else
             {
                 //unknow
